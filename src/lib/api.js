@@ -7,28 +7,48 @@ import {
     doc, 
     query, 
     orderBy,
-    updateDoc, // ⭐️ updateDoc 추가
-    deleteDoc  // ⭐️ deleteDoc 추가
-} from 'firebase/firestore'; // 모든 Firestore 관련 함수를 여기서 한 번에 import
+    updateDoc,  // ⭐️ 수정 기능 추가
+    deleteDoc   // ⭐️ 삭제 기능 추가
+} from 'firebase/firestore'; // 모든 Firestore 관련 함수를 한 번에 import
 
 const COLLECTION_NAME = 'posts';
 
-// 글 저장
+// 1. 글 저장
 export const createPost = async (title, content) => {
-// ... (기존 createPost 코드) ...
+  try {
+    await addDoc(collection(db, COLLECTION_NAME), {
+      title,
+      content,
+      createdAt: new Date().toISOString(),
+    });
+    return true;
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return false;
+  }
 };
 
-// 글 목록 불러오기
+// 2. 글 목록 불러오기
 export const getAllPosts = async () => {
-// ... (기존 getAllPosts 코드) ...
+  const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 };
 
-// 글 1개 상세 불러오기
+// 3. 글 1개 상세 불러오기
 export const getPostById = async (id) => {
-// ... (기존 getPostById 코드) ...
+  const docRef = doc(db, COLLECTION_NAME, id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  }
+  return null;
 };
 
-// ⭐️ 글 수정
+// ⭐️ 4. 글 수정
 export const updatePost = async (id, title, content) => {
     try {
         const postRef = doc(db, COLLECTION_NAME, id);
@@ -44,10 +64,9 @@ export const updatePost = async (id, title, content) => {
     }
 };
 
-// ⭐️ 글 삭제
+// ⭐️ 5. 글 삭제
 export const deletePost = async (id) => {
     try {
-        // doc과 deleteDoc을 이미 상단에서 import 했으므로 바로 사용
         await deleteDoc(doc(db, COLLECTION_NAME, id));
         return true;
     } catch (error) {
