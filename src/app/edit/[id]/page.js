@@ -10,8 +10,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 // ⭐️ api.js에서 글 상세 정보 및 삭제 함수를 가져옵니다.
-import { getPostById, updatePost, deletePost } from '../../../../lib/api'; 
-// 주의: updatePost는 아직 api.js에 없으므로, 잠시 후 추가합니다.
+import { getPostById, updatePost, deletePost } from '../../../lib/api';
 
 export default function EditPage() {
   const router = useRouter();
