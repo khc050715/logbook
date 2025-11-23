@@ -1,10 +1,6 @@
 "use client"; // 최상단에 유지
 
-// ⭐️ generateStaticParams 함수는 삭제합니다.
-// build 시에 모든 ID를 미리 가져올 필요가 없으며, 
-// 'use client'가 있는 파일에서는 사용할 수 없습니다.
-// 만약 정적 빌드를 원한다면, 부모 폴더에 page.js를 두어 처리하는 방법이 있지만,
-// 현재는 클라이언트에서 데이터를 가져오도록 [id]/page.js 파일을 클라이언트 컴포넌트로 유지합니다.
+export const dynamic = 'force-dynamic';
 
 // Firebase/React Hooks import 유지
 import { useState, useEffect } from 'react';
