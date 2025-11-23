@@ -1,25 +1,47 @@
-// /src/app/edit/[id]/page.js
-'use client';
+"use client";
 
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../../lib/firebase';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { db } from '../../../lib/firebase'; // Firebase 설정 경로가 올바른지 확인
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+// ⭐️ api.js에서 deletePost 함수를 가져옵니다.
+import { doc, getDoc, updateDoc } from 'firebase/firestore'; 
+import { deletePost } from '../../../lib/api'; 
+// 참고: 위에서 'deletePost'를 가져왔으므로, 'doc'과 'deleteDoc'은 api.js에서 처리하는 것이 좋습니다.
+// 하지만 현재 코드 구조를 유지하기 위해, 아래에서는 deletePost를 사용하겠습니다.
+
+// 빌드 시점에 실행되어 Next.js에게 정적 페이지 목록을 알려줍니다. (기존 코드 그대로 유지)
+export async function generateStaticParams() {
+  let postIds = [];
+  
+  try {
+    const postsCollection = collection(db, "posts");
+    const snapshot = await getDocs(postsCollection);
+    
+    postIds = snapshot.docs.map(doc => ({
+      id: doc.id,
+    }));
+    
+  } catch (error) {
+    console.error("Error fetching static params:", error);
+  }
+
+  return postIds; 
+}
 
 export default function EditPage() {
   const router = useRouter();
   const pathname = usePathname();
-  // URL에서 ID 추출: /edit/postID 형태에서 postID를 가져옴
   const id = pathname.split('/').pop(); 
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // ⭐️ [ID]에 해당하는 기존 포스트 데이터 불러오기
+  // [ID]에 해당하는 기존 포스트 데이터 불러오기 (기존 코드 그대로 유지)
   useEffect(() => {
     if (!id) return;
-    
+    // ... (기존 fetchPost 함수 로직) ...
     const fetchPost = async () => {
       try {
         const docRef = doc(db, "posts", id);
@@ -42,28 +64,51 @@ export default function EditPage() {
     fetchPost();
   }, [id, router]);
 
-  // ⭐️ 수정 데이터 저장 로직
+  // 수정 데이터 저장 로직 (기존 코드 그대로 유지)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // ... (기존 handleSubmit 로직) ...
     if (!title.trim() || !content.trim()) return;
 
     try {
       const postRef = doc(db, "posts", id);
       
-      // Firestore updateDoc 사용: 기존 문서를 덮어쓰지 않고 필드만 업데이트
       await updateDoc(postRef, {
         title: title,
         content: content,
-        updatedAt: new Date().toISOString(), // 수정 시간 기록
+        updatedAt: new Date().toISOString(),
       });
       
       alert('글이 성공적으로 수정되었습니다.');
-      router.push(`/detail/${id}`); // 수정 후 상세 페이지로 이동
+      // 상세 페이지로 이동하는 경로를 프로젝트에 맞게 확인하세요.
+      // '/detail/${id}' 경로가 없다면, 홈으로 이동하는 것이 안전합니다.
+      router.push(`/`); 
     } catch (error) {
       console.error("문서 수정 중 오류 발생:", error);
       alert('수정 중 오류가 발생했습니다.');
     }
   };
+  
+  // ⭐️ 삭제 기능 추가 로직
+  const handleDelete = async () => {
+    if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
+      try {
+        // api.js의 deletePost 함수 사용
+        const success = await deletePost(id); 
+        
+        if (success) {
+          alert('글이 성공적으로 삭제되었습니다.');
+          router.push('/'); // 삭제 후 홈 페이지로 이동
+        } else {
+          alert('삭제 중 오류가 발생했습니다.');
+        }
+      } catch (error) {
+        console.error("문서 삭제 중 오류 발생:", error);
+        alert('삭제 중 치명적인 오류가 발생했습니다.');
+      }
+    }
+  };
+
 
   if (loading) return <div>로딩 중...</div>;
 
@@ -84,32 +129,14 @@ export default function EditPage() {
           onChange={(e) => setContent(e.target.value)}
           required
         />
-        <button type="submit">수정 완료</button>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <button type="submit">수정 완료</button>
+          {/* ⭐️ 삭제 버튼 추가 */}
+          <button type="button" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
+            삭제하기
+          </button>
+        </div>
       </form>
     </div>
   );
 }
-
-// 상세 페이지 컴포넌트 내의 JSX 부분 수정
-
-// ... 포스트 데이터 로드가 완료된 후 ...
-
-// 포스트 ID를 저장하는 변수가 postData.id 라고 가정합니다.
-
-return (
-  <div>
-    <h1>{postData.title}</h1>
-    <p>{postData.content}</p>
-    
-    {/* ⭐️ 수정 버튼 추가: 클릭 시 /edit/[postID] 경로로 이동 */}
-    <button 
-      onClick={() => router.push(`/edit/${postData.id}`)}
-      style={{ marginRight: '10px' }}
-    >
-      수정하기
-    </button>
-    
-    {/* 기존 삭제 버튼이 있다면 옆에 추가됩니다. */}
-    {/* <button onClick={handleDelete}>삭제하기</button> */}
-  </div>
-);

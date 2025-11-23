@@ -37,3 +37,19 @@ export const getPostById = async (id) => {
   }
   return null;
 };
+
+// 글 삭제
+// import { doc, deleteDoc } from 'firebase/firestore'; // deleteDoc import 추가
+
+// ... 기존 createPost, getAllPosts, getPostById 함수 ...
+
+// 글 삭제
+export const deletePost = async (id) => {
+  try {
+    await deleteDoc(doc(db, COLLECTION_NAME, id));
+    return true;
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return false;
+  }
+};
