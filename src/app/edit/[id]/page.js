@@ -1,54 +1,38 @@
-"use client";
+"use client"; // 최상단에 유지
 
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../lib/firebase';
+// ⭐️ generateStaticParams 함수는 삭제합니다.
+// build 시에 모든 ID를 미리 가져올 필요가 없으며, 
+// 'use client'가 있는 파일에서는 사용할 수 없습니다.
+// 만약 정적 빌드를 원한다면, 부모 폴더에 page.js를 두어 처리하는 방법이 있지만,
+// 현재는 클라이언트에서 데이터를 가져오도록 [id]/page.js 파일을 클라이언트 컴포넌트로 유지합니다.
+
+// Firebase/React Hooks import 유지
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-// ⭐️ api.js에서 deletePost 함수를 가져옵니다.
-import { doc, getDoc, updateDoc } from 'firebase/firestore'; 
-import { deletePost } from '../../../lib/api'; 
-// 참고: 위에서 'deletePost'를 가져왔으므로, 'doc'과 'deleteDoc'은 api.js에서 처리하는 것이 좋습니다.
-// 하지만 현재 코드 구조를 유지하기 위해, 아래에서는 deletePost를 사용하겠습니다.
-
-// 빌드 시점에 실행되어 Next.js에게 정적 페이지 목록을 알려줍니다. (기존 코드 그대로 유지)
-export async function generateStaticParams() {
-  let postIds = [];
-  
-  try {
-    const postsCollection = collection(db, "posts");
-    const snapshot = await getDocs(postsCollection);
-    
-    postIds = snapshot.docs.map(doc => ({
-      id: doc.id,
-    }));
-    
-  } catch (error) {
-    console.error("Error fetching static params:", error);
-  }
-
-  return postIds; 
-}
+// ⭐️ api.js에서 글 상세 정보 및 삭제 함수를 가져옵니다.
+import { getPostById, updatePost, deletePost } from '../../../../lib/api'; 
+// 주의: updatePost는 아직 api.js에 없으므로, 잠시 후 추가합니다.
 
 export default function EditPage() {
   const router = useRouter();
   const pathname = usePathname();
+  // URL에서 ID 추출: /edit/postID 형태에서 postID를 가져옴
   const id = pathname.split('/').pop(); 
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // [ID]에 해당하는 기존 포스트 데이터 불러오기 (기존 코드 그대로 유지)
+  // ⭐️ [ID]에 해당하는 기존 포스트 데이터 불러오기 (API 함수 사용)
   useEffect(() => {
     if (!id) return;
-    // ... (기존 fetchPost 함수 로직) ...
+    
     const fetchPost = async () => {
       try {
-        const docRef = doc(db, "posts", id);
-        const docSnap = await getDoc(docRef);
+        // api.js의 getPostById 함수 사용
+        const data = await getPostById(id);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+        if (data) {
           setTitle(data.title);
           setContent(data.content);
         } else {
@@ -64,32 +48,28 @@ export default function EditPage() {
     fetchPost();
   }, [id, router]);
 
-  // 수정 데이터 저장 로직 (기존 코드 그대로 유지)
+  // ⭐️ 수정 데이터 저장 로직 (API 함수 사용)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // ... (기존 handleSubmit 로직) ...
     if (!title.trim() || !content.trim()) return;
 
     try {
-      const postRef = doc(db, "posts", id);
+      // api.js의 updatePost 함수 사용을 가정
+      const success = await updatePost(id, title, content);
       
-      await updateDoc(postRef, {
-        title: title,
-        content: content,
-        updatedAt: new Date().toISOString(),
-      });
-      
-      alert('글이 성공적으로 수정되었습니다.');
-      // 상세 페이지로 이동하는 경로를 프로젝트에 맞게 확인하세요.
-      // '/detail/${id}' 경로가 없다면, 홈으로 이동하는 것이 안전합니다.
-      router.push(`/`); 
+      if (success) {
+        alert('글이 성공적으로 수정되었습니다.');
+        router.push(`/detail/${id}`); 
+      } else {
+        alert('수정 중 오류가 발생했습니다.');
+      }
     } catch (error) {
       console.error("문서 수정 중 오류 발생:", error);
       alert('수정 중 오류가 발생했습니다.');
     }
   };
   
-  // ⭐️ 삭제 기능 추가 로직
+  // ⭐️ 삭제 기능 로직 (API 함수 사용)
   const handleDelete = async () => {
     if (confirm('정말로 이 글을 삭제하시겠습니까?')) {
       try {
@@ -131,7 +111,6 @@ export default function EditPage() {
         />
         <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
           <button type="submit">수정 완료</button>
-          {/* ⭐️ 삭제 버튼 추가 */}
           <button type="button" onClick={handleDelete} style={{ backgroundColor: 'red' }}>
             삭제하기
           </button>
