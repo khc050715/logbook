@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { db } from '../../../firebase'; // Firebase 설정 경로가 올바른지 확인
+import { db } from '../../../lib/firebase'; // Firebase 설정 경로가 올바른지 확인
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function EditPage() {
