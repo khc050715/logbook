@@ -1,8 +1,8 @@
 // src/app/edit/[id]/page.js 파일 내용
 
 import { collection, getDocs } from 'firebase/firestore';
-// ⭐️ firebase 경로를 '../../../../lib/firebase'로 수정합니다.
-import { db } from '../../../../lib/firebase'; 
+
+import { db } from '../../../lib/firebase'; 
 import EditPageClient from './EditPageClient'; // ⭐️ 1단계에서 이름 바꾼 파일 import
 
 // ⭐️ generateStaticParams를 여기에 정의합니다. (서버에서 실행되어 빌드 오류 해결)
