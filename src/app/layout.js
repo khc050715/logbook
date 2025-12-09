@@ -2,7 +2,7 @@ import './globals.css';
 import Header from '@/components/Header';
 
 export const metadata = {
-  title: 'My Blog',
+  title: 'logbook',
   description: 'Markdown Blog with Next.js',
 };
 

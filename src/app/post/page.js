@@ -52,21 +52,14 @@ function PostContent() {
       {/* ⭐️ 수정/삭제 버튼 섹션 */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
           <button 
-              // 클릭 시 /edit/postID 경로로 이동
-              onClick={() => router.push(`/edit/${post.id}`)} 
+              // 🔴 기존: onClick={() => router.push(`/edit/${post.id}`)} 
+              // 🟢 수정: 쿼리 파라미터 방식으로 변경하세요!
+              onClick={() => router.push(`/edit?id=${post.id}`)} 
               style={{ padding: '8px 15px', border: '1px solid #ccc', background: '#f9f9f9', cursor: 'pointer' }}
           >
               수정하기
           </button>
-          <button 
-              onClick={handleDelete}
-              style={{ padding: '8px 15px', border: 'none', background: 'red', color: 'white', cursor: 'pointer' }}
-          >
-              삭제하기
-          </button>
       </div>
-      {/* ⭐️ 수정/삭제 버튼 섹션 끝 */}
-      
       <p style={{ color: '#888', marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
         {new Date(post.createdAt).toLocaleDateString()}
       </p>
