@@ -1,32 +1,25 @@
-// src/app/edit/[id]/page.js 파일 내용
+// src/app/edit/[id]/page.js
 
 import { collection, getDocs } from 'firebase/firestore';
 
+// 👇 여기를 '../../../lib/firebase' 대신 '@/lib/db'로 수정!
 import { db } from '@/lib/db'; 
-import EditPageClient from './EditPageClient'; // ⭐️ 1단계에서 이름 바꾼 파일 import
 
+import EditPageClient from './EditPageClient';
+
+// generateStaticParams 함수는 그대로 둡니다.
 export async function generateStaticParams() {
   let postIds = [];
-  
   try {
     const postsCollection = collection(db, "posts");
     const snapshot = await getDocs(postsCollection);
-    
-    // Firestore에서 모든 문서 ID를 추출합니다.
-    postIds = snapshot.docs.map(doc => ({
-      id: doc.id,
-    }));
-    
+    postIds = snapshot.docs.map(doc => ({ id: doc.id }));
   } catch (error) {
     console.error("Error fetching static params:", error);
   }
-
-  // Next.js가 빌드할 페이지 목록을 반환합니다.
   return postIds; 
 }
 
-// ⭐️ 기본 컴포넌트는 EditPageClient를 렌더링합니다.
-// 이 컴포넌트는 서버에서 실행되므로, generateStaticParams와 충돌하지 않습니다.
 export default function EditPageServer() {
   return <EditPageClient />;
 }

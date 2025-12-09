@@ -1,4 +1,8 @@
-import { db } from './db';
+// src/lib/api.js
+
+// 👇 여기를 './firebase' 대신 '@/lib/db'로 수정!
+import { db } from '@/lib/db'; 
+
 import { 
     collection, 
     addDoc, 
