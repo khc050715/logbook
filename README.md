@@ -1,36 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# logbook
+#### Log. 
+어원: 중세 영어 Logge (통나무, wood)
 
-## Getting Started
+의미: 과거 대항해시대에 선원들은 배의 속도를 측정하기 위해 밧줄에 매달린 통나무를 바다에 던졌다. 그리고 그 측정치를 장부에 적었는데, 그 장부를 'Log-book' 이라고 불렀다. 
 
-First, run the development server:
+#### Knot.
+선원들이 통나무(Log)를 바다에 던질 때, 통나무에 연결된 밧줄에는 일정 간격으로 매듭(Knot)가 지어져 있었다.
+"오늘은 매듭이 5개 풀려나가는 속도로 달렸다" 이것이 Logbook이 되고, 속도의 단위는 Knot가 되었다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### logbook
+즉, Logbook은 길없는 바다 위에서 내 속도와 위치를 잊지 않기 위한 노력이다.
