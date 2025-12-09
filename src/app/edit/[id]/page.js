@@ -2,10 +2,9 @@
 
 import { collection, getDocs } from 'firebase/firestore';
 
-import { db } from '../../../lib/firebase'; 
+import { db } from '@/lib/db'; 
 import EditPageClient from './EditPageClient'; // ⭐️ 1단계에서 이름 바꾼 파일 import
 
-// ⭐️ generateStaticParams를 여기에 정의합니다. (서버에서 실행되어 빌드 오류 해결)
 export async function generateStaticParams() {
   let postIds = [];
   
