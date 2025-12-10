@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header style={{ padding: '20px 0', marginBottom: '40px', borderBottom: '1px solid #eee' }}>
       <nav style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', textDecoration: 'none', color: 'black' }}>
+        <Link href="/" style={{ fontSize: '1.5rem', fontWeight: '700', textDecoration: 'none', color: 'black' }}>
           logbook
         </Link>
         {/* ▼ 쓰기 버튼 링크가 이 부분입니다. ▼ */}
