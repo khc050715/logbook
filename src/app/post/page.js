@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation'; // ⭐️ useRouter 추가
-import { getPostById, deletePost } from '@/lib/api'; // ⭐️ deletePost 함수 import
+import { useSearchParams, useRouter } from 'next/navigation'; 
+import { getPostById, deletePost } from '@/lib/api'; 
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 function PostContent() {
   const searchParams = useSearchParams();
-  const router = useRouter(); // ⭐️ useRouter 훅 사용
-  // ⭐️ post의 ID는 ?id=... 형태로 오지만, 수정 기능은 ID를 URL 경로로 사용하므로
-  // 실제 글 ID는 post.id에서 가져와야 안전합니다.
+  const router = useRouter(); 
+  
   const id = searchParams.get('id'); 
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);

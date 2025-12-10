@@ -11,8 +11,8 @@ import {
     doc, 
     query, 
     orderBy,
-    updateDoc,  // ⭐️ 수정 기능 추가
-    deleteDoc   // ⭐️ 삭제 기능 추가
+    updateDoc, 
+    deleteDoc   
 } from 'firebase/firestore'; // 모든 Firestore 관련 함수를 한 번에 import
 
 const COLLECTION_NAME = 'posts';

@@ -31,7 +31,7 @@ export default function WritePage() {
         placeholder="마크다운 내용 입력 (# 안녕)" 
         value={content} onChange={(e)=>setContent(e.target.value)}
         rows={15}
-        style={{ padding: '10px', fontFamily: 'monospace', border: '1px solid #ddd' }}
+        style={{ padding: '10px', fontFamily: 'GMarketSans', border: '1px solid #ddd' }}
       />
       <button onClick={handleSubmit} style={{ padding: '15px', background: 'black', color: 'white', cursor: 'pointer' }}>
         발행하기
