@@ -1,6 +1,6 @@
 {
   "name": "logbook",
-  "short_name": "log",
+  "short_name": "logbook",
   "icons": [
     {
       "src": "../../public/S-android-chrome-192x192.png",
