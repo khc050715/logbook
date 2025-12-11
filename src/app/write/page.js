@@ -1,7 +1,11 @@
+// src/app/write/page.js
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/lib/api';
+import CodeMirror from '@uiw/react-codemirror';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
 
 export default function WritePage() {
   const [title, setTitle] = useState('');
@@ -20,20 +24,25 @@ export default function WritePage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px' }}>
       <h1>글 쓰기</h1>
       <input 
         type="text" placeholder="제목" 
         value={title} onChange={(e)=>setTitle(e.target.value)}
-        style={{ padding: '10px', fontSize: '1.2rem', border: '1px solid #ddd' }}
+        style={{ padding: '10px', fontSize: '1.2rem', border: '1px solid #ddd', borderRadius: '5px' }}
       />
-      <textarea 
-        placeholder="마크다운 내용 입력 (# 안녕)" 
-        value={content} onChange={(e)=>setContent(e.target.value)}
-        rows={15}
-        style={{ padding: '10px', fontFamily: 'GMarketSans', border: '1px solid #ddd' }}
-      />
-      <button onClick={handleSubmit} style={{ padding: '15px', background: 'black', color: 'white', cursor: 'pointer' }}>
+      
+      <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden' }}>
+        <CodeMirror
+          value={content}
+          height="500px"
+          extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
+          onChange={(value) => setContent(value)} // ⭐️ 여기가 중요합니다 (value를 바로 받음)
+          theme="dark"
+        />
+      </div>
+
+      <button onClick={handleSubmit} style={{ padding: '15px', background: 'black', color: 'white', border:'none', borderRadius:'5px', cursor: 'pointer' }}>
         발행하기
       </button>
     </div>
