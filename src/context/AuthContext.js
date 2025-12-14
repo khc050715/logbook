@@ -1,43 +1,46 @@
 // src/context/AuthContext.js
 "use client";
 import { createContext, useContext, useEffect, useState } from 'react';
+import { auth } from '@/lib/db'; // 파이어베이스 인증 가져오기
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true); // 초기 로딩 상태 추가
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // 🔑 마스터 코드 설정 (환경변수로 빼는 것을 추천하지만, 편의상 여기에 적습니다)
-  const MASTER_CODE = process.env.NEXT_PUBLIC_MASTER_CODE || "1234"; 
+  // 이메일은 고정해두고, 비밀번호만 '마스터 코드'처럼 입력받습니다.
+  const ADMIN_EMAIL = "admin@logbook.com"; 
 
   useEffect(() => {
-    // 페이지 로드 시 로컬 스토리지 확인
-    const savedCode = localStorage.getItem('masterCode');
-    if (savedCode === MASTER_CODE) {
-      setIsLoggedIn(true);
-    }
-    setLoading(false);
+    // 새로고침해도 로그인 상태 유지 (파이어베이스가 알아서 관리함)
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const login = (code) => {
-    if (code === MASTER_CODE) {
-      localStorage.setItem('masterCode', code);
-      setIsLoggedIn(true);
+  //  로그인 (서버에 물어봄)
+  const login = async (code) => {
+    try {
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, code);
       return true;
+    } catch (error) {
+      console.error("Login failed:", error);
+      return false;
     }
-    return false;
   };
 
-  const logout = () => {
-    localStorage.removeItem('masterCode');
-    setIsLoggedIn(false);
-    alert('시스템이 잠겼습니다.');
-    window.location.href = '/'; // 확실한 초기화를 위해 이동
-  };
+const logout = async () => {
+  await signOut(auth);
+  alert('시스템이 잠겼습니다.');
+  window.location.href = '/logbook/'; 
+};
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, loading }}>
+    <AuthContext.Provider value={{ isLoggedIn: !!user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

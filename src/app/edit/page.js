@@ -21,8 +21,7 @@ function EditForm() {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true); // 글 데이터 로딩 상태
 
-  // 👈 3. 보안 가드 (Security Guard)
-  // 인증 로딩이 끝났는데 로그인이 안 되어 있다면 홈으로 쫓아냄
+  
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       alert('접근 권한이 없습니다.'); // 선택사항: 알림창 띄우기
