@@ -15,7 +15,6 @@ const MyButton = ({ children, ...props }) => (
 const options = {
     overrides: {
         Button: { component: MyButton },
-        Typewriter: { component: Typewriter },
     },
 };
 
