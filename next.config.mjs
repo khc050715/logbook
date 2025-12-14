@@ -2,7 +2,6 @@
 const nextConfig = {
   output: 'export',
   basePath: '/logbook',
-  
   images: { unoptimized: true },
   trailingSlash: true,
 };

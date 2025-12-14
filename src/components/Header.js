@@ -7,7 +7,6 @@ export default function Header() {
         <Link href="/" style={{ fontSize: '1.5rem', fontWeight: '700', textDecoration: 'none', color: 'black' }}>
           logbook
         </Link>
-        {/* ▼ 쓰기 버튼 링크가 이 부분입니다. ▼ */}
         <Link href="/write" style={{ textDecoration: 'none', color: '#666' }}>
           Write
         </Link>
