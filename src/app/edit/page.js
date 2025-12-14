@@ -7,16 +7,30 @@ import { getPostById, updatePost } from '@/lib/api';
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
+import { useAuth } from '@/context/AuthContext'; // 👈 1. AuthContext 임포트
 
 function EditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
+  // 👈 2. 인증 상태와 인증 로딩 상태 가져오기
+  const { isLoggedIn, loading: authLoading } = useAuth(); 
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // 글 데이터 로딩 상태
 
+  // 👈 3. 보안 가드 (Security Guard)
+  // 인증 로딩이 끝났는데 로그인이 안 되어 있다면 홈으로 쫓아냄
+  useEffect(() => {
+    if (!authLoading && !isLoggedIn) {
+      alert('접근 권한이 없습니다.'); // 선택사항: 알림창 띄우기
+      router.replace('/'); 
+    }
+  }, [authLoading, isLoggedIn, router]);
+
+  // 기존 데이터 불러오기 로직
   useEffect(() => {
     if (!id) return;
     getPostById(id).then((data) => {
@@ -38,6 +52,10 @@ function EditForm() {
     }
   };
 
+  // 👈 4. 화면 차단 (Render Blocking)
+  // 인증 체크 중이거나(authLoading), 비로그인 상태(!isLoggedIn)면 화면을 아예 그리지 않음
+  if (authLoading || !isLoggedIn) return null;
+
   if (loading) return <p>로딩 중...</p>;
   if (!id) return <p>잘못된 접근입니다.</p>;
 
@@ -58,7 +76,7 @@ function EditForm() {
             height="500px"
             extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
             onChange={(value) => setContent(value)}
-            theme="dark"
+            theme="light" 
           />
         </div>
 
