@@ -10,7 +10,6 @@ function PostContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get('id');
-
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 

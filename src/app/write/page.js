@@ -38,7 +38,7 @@ export default function WritePage() {
           height="500px"
           extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
           onChange={(value) => setContent(value)} // ⭐️ 여기가 중요합니다 (value를 바로 받음)
-          theme="dark"
+          theme="light"
         />
       </div>
 

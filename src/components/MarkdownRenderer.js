@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Markdown from 'markdown-to-jsx';
 
-// --- 1. 커스텀 컴포넌트 정의 ---
+// --- 커스텀 컴포넌트 정의 ---
 
 // (1) 버튼 컴포넌트
 const MyButton = ({ children, ...props }) => (
@@ -11,8 +11,8 @@ const MyButton = ({ children, ...props }) => (
     </button>
 );
 
-// (2) 타자기 효과 컴포넌트 (안전 장치 추가됨)
-const Typewriter = ({ text, children, speed = 100, color = "#00ff41", bg = "#000" }) => {
+// (2) 타자기 효과 컴포넌트 
+const Typewriter = ({ text, children, speed = 100}) => {
   // text 속성이 없으면 children(태그 사이 내용)을 사용, 둘 다 없으면 빈 문자열
   const finalText = text || (typeof children === "string" ? children : "") || "";
   
@@ -50,7 +50,6 @@ const Typewriter = ({ text, children, speed = 100, color = "#00ff41", bg = "#000
   return (
     <span style={{
       fontFamily: "'Courier New', Courier, monospace",
-      backgroundColor: bg,
       color: color,
       padding: "4px 8px",
       borderRadius: "4px",
