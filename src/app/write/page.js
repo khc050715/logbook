@@ -1,5 +1,5 @@
 // src/app/write/page.js
-"use client";
+"use client"; 
 import { useState, useEffect } from 'react'; // useEffect 추가
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/lib/api';
