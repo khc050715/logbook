@@ -7,14 +7,13 @@ import { getPostById, updatePost } from '@/lib/api';
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { useAuth } from '@/context/AuthContext'; // 👈 1. AuthContext 임포트
-
+import { useAuth } from '@/context/AuthContext'; 
 function EditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
-  // 👈 2. 인증 상태와 인증 로딩 상태 가져오기
+  // 2. 인증 상태와 인증 로딩 상태 가져오기
   const { isLoggedIn, loading: authLoading } = useAuth(); 
 
   const [title, setTitle] = useState('');
