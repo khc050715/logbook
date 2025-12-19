@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'; // useEffect 추가
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/lib/api';
-import CodeMirror from '@uiw/react-codemirror';
+import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { useAuth } from '@/context/AuthContext'; 
@@ -67,7 +67,10 @@ export default function WritePage() {
         <CodeMirror
           value={content}
           height="500px"
-          extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
+          extensions={[
+            markdown({ base: markdownLanguage, codeLanguages: languages }),
+            EditorView.lineWrapping
+          ]}
           onChange={(value) => setContent(value)}
           theme="light"
         />
