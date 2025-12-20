@@ -70,7 +70,6 @@ function EditForm() {
         
         <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden' }}>
           <Editor 
-            key={id}
             initialValue={content}
             onChange={(val) => setContent(val)} 
           />

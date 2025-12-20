@@ -64,7 +64,6 @@ export default function WritePage() {
       
       <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden', fontSize: '1.0rem', fontfamily: 'GMarketSans'}}>
         <Editor 
-          key={id}
           initialValue={content} 
           onChange={(val) => setContent(val)} 
         />
