@@ -4,7 +4,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPostById, updatePost } from '@/lib/api';
-import CodeMirror, { EditorView } from '@uiw/react-codemirror';
+import CodeMirror from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { useAuth } from '@/context/AuthContext'; 
@@ -72,10 +72,7 @@ function EditForm() {
           <CodeMirror 
             value={content} 
             height="500px"
-            extensions={[
-              markdown({ base: markdownLanguage, codeLanguages: languages }),
-              EditorView.lineWrapping
-            ]}
+            extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
             onChange={(value) => setContent(value)}
             theme="light" 
           />
