@@ -7,7 +7,6 @@ import { getPostById, updatePost } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext'; 
 import Editor from '@/components/Editor';
 import '../globals.css';
-
 function EditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();

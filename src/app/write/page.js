@@ -1,12 +1,14 @@
 // src/app/write/page.js
 "use client"; 
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/lib/api';
+import CodeMirror from '@uiw/react-codemirror';
 import { useAuth } from '@/context/AuthContext'; 
 import Editor from '@/components/Editor'; // 분리한 컴포넌트 사용
 import '../globals.css';
+
+
 
 export default function WritePage() {
   const [title, setTitle] = useState('');
