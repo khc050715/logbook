@@ -17,7 +17,7 @@ export const createPost = async (title, content) => {
     return true;
   } catch (error) {
     console.error("Error creating post:", error);
-    return false;
+    throw error;
   }
 };
 

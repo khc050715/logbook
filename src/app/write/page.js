@@ -23,12 +23,12 @@ export default function WritePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !content) return alert('내용을 채워주세요');
-    
-    const res = await createPost(title, content);
-    if (res) {
+    try {
+      await createPost(title, content); // res 확인 불필요
       alert('저장 완료!');
       router.push('/');
+    } catch (error) {
+      alert('저장에 실패했습니다. 잠시 후 다시 시도해주세요.'); // 사용자 친화적 에러 메시지
     }
   };
 
@@ -36,7 +36,7 @@ export default function WritePage() {
   if (loading || !isLoggedIn) return null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px' }}>
+    <div className="write-container">
       
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center'}}>
         <h1>글 쓰기</h1>
@@ -64,7 +64,7 @@ export default function WritePage() {
       
       <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden', fontSize: '1.0rem', fontfamily: 'GMarketSans'}}>
         <Editor 
-          initialValue="" 
+          initialValue={content} 
           onChange={(val) => setContent(val)} 
         />
       </div>

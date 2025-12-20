@@ -11,7 +11,7 @@ const extensions = [
 
 export default function Editor({ initialValue, onChange }) {
   return (
-    <div className="editor-container" style={{}}>
+    <div className="editor-container">
       <CodeMirror
         defaultValue={initialValue || ''}
         extensions={extensions}
