@@ -1,6 +1,6 @@
 // src/app/write/page.js
 "use client"; 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react'; // useEffect 추가
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/lib/api';
 import CodeMirror, { EditorView } from '@uiw/react-codemirror';
@@ -36,12 +36,6 @@ export default function WritePage() {
   // 로딩 중이거나 로그인 안 된 상태면 화면 렌더링 안 함
   if (loading || !isLoggedIn) return null;
 
-    // 에디터 확장이 렌더링마다 재설정되지 않도록 기억(memo)함
-  const extensions = useMemo(() => [
-    markdown({ base: markdownLanguage, codeLanguages: languages }),
-    EditorView.lineWrapping,
-  ], [])
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '20px' }}>
       
@@ -73,7 +67,10 @@ export default function WritePage() {
         <CodeMirror
           value={content}
           height="500px"
-          extensions={extensions}
+          extensions={[
+            markdown({ base: markdownLanguage, codeLanguages: languages }),
+            EditorView.lineWrapping
+          ]}
           onChange={(value) => setContent(value)}
           theme="light"
         />

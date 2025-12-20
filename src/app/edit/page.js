@@ -1,7 +1,7 @@
 // src/app/edit/page.js
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPostById, updatePost } from '@/lib/api';
 import CodeMirror, { EditorView } from '@uiw/react-codemirror';
@@ -57,12 +57,6 @@ function EditForm() {
   if (loading) return <p>로딩 중...</p>;
   if (!id) return <p>잘못된 접근입니다.</p>;
 
-  // 에디터 확장이 렌더링마다 재설정되지 않도록 기억(memo)함
-  const extensions = useMemo(() => [
-    markdown({ base: markdownLanguage, codeLanguages: languages }),
-    EditorView.lineWrapping,
-  ], [])
-
   return (
     <div style={{ padding: '20px' }}>
       <h1>글 수정하기</h1>
@@ -78,7 +72,10 @@ function EditForm() {
           <CodeMirror 
             value={content} 
             height="500px"
-            extensions={extensions}
+            extensions={[
+              markdown({ base: markdownLanguage, codeLanguages: languages }),
+              EditorView.lineWrapping
+            ]}
             onChange={(value) => setContent(value)}
             theme="light" 
           />
