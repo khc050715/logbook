@@ -6,8 +6,7 @@ import { createPost } from '@/lib/api';
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { useAuth } from '@/context/AuthContext'; 
-import '../globals.css';
+import { useAuth } from '@/context/AuthContext'; // 👈 추가
 
 export default function WritePage() {
   const [title, setTitle] = useState('');
@@ -53,17 +52,17 @@ export default function WritePage() {
             cursor:'pointer'
           }}
         >
-          Logout
+          🔒 Lock System
         </button>
       </div>
 
       <input 
         type="text" placeholder="제목" 
         value={title} onChange={(e)=>setTitle(e.target.value)}
-        style={{ padding: '10px', fontSize: '1.2rem', border: '1px solid #ddd', borderRadius: '5px', lineHeight: '1.2' }}
+        style={{ padding: '10px', fontSize: '1.2rem', border: '1px solid #ddd', borderRadius: '5px' }}
       />
       
-      <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden', fontSize: '1.0rem', fontfamily: 'GMarketSans'}}>
+      <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden' }}>
         <CodeMirror
           value={content}
           height="500px"
