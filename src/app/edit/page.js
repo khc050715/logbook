@@ -1,12 +1,13 @@
 // src/app/edit/page.js
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getPostById, updatePost } from '@/lib/api';
+import CodeMirror, { EditorView } from '@uiw/react-codemirror';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
 import { useAuth } from '@/context/AuthContext'; 
-import Editor from '@/components/Editor';
-import '../globals.css';
 function EditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -49,12 +50,18 @@ function EditForm() {
     }
   };
 
-  // 화면 차단 (Render Blocking)
+  // 👈 4. 화면 차단 (Render Blocking)
   // 인증 체크 중이거나(authLoading), 비로그인 상태(!isLoggedIn)면 화면을 아예 그리지 않음
   if (authLoading || !isLoggedIn) return null;
 
   if (loading) return <p>로딩 중...</p>;
   if (!id) return <p>잘못된 접근입니다.</p>;
+
+  // 에디터 확장이 렌더링마다 재설정되지 않도록 기억(memo)함
+  const extensions = useMemo(() => [
+    markdown({ base: markdownLanguage, codeLanguages: languages }),
+    EditorView.lineWrapping,
+  ], [])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -68,11 +75,15 @@ function EditForm() {
         />
         
         <div style={{ border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden' }}>
-          <Editor 
-            initialValue="" 
-            onChange={(val) => setContent(val)} 
+          <CodeMirror 
+            value={content} 
+            height="500px"
+            extensions={extensions}
+            onChange={(value) => setContent(value)}
+            theme="light" 
           />
         </div>
+
         <button type="submit" style={{ padding: '15px', background: 'black', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
           수정 완료
         </button>
