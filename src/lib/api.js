@@ -1,10 +1,21 @@
 import { db } from '@/lib/db'; 
 import { 
     collection, addDoc, getDocs, getDoc, doc, 
-    query, orderBy, updateDoc, deleteDoc   
+    query, orderBy, updateDoc, deleteDoc, serverTimestamp 
 } from 'firebase/firestore'; 
 
 const COLLECTION_NAME = 'posts';
+
+// 헬퍼 함수: Firestore 타임스탬프를 ISO 문자열로 변환
+const convertDoc = (docSnap) => {
+  const data = docSnap.data();
+  return {
+    id: docSnap.id,
+    ...data,
+    createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : null,
+    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : null,
+  };
+};
 
 // 1. 글 저장
 export const createPost = async (title, content) => {
@@ -12,7 +23,7 @@ export const createPost = async (title, content) => {
     await addDoc(collection(db, COLLECTION_NAME), {
       title,
       content,
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(), // 서버 시간 사용
     });
     return true;
   } catch (error) {
@@ -21,22 +32,19 @@ export const createPost = async (title, content) => {
   }
 };
 
-// 2. 글 목록 불러오기 (최신순)
+// 2. 글 목록 불러오기
 export const getAllPosts = async () => {
   const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  return snapshot.docs.map(convertDoc);
 };
 
-// 3. 글 1개 상세 불러오기
+// 3. 글 상세 불러오기
 export const getPostById = async (id) => {
   const docRef = doc(db, COLLECTION_NAME, id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() };
+    return convertDoc(docSnap);
   }
   return null;
 };
@@ -48,7 +56,7 @@ export const updatePost = async (id, title, content) => {
         await updateDoc(postRef, {
             title: title,
             content: content,
-            updatedAt: new Date().toISOString(),
+            updatedAt: serverTimestamp(), // 수정 시간도 서버 시간으로
         });
         return true;
     } catch (error) {
