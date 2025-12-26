@@ -16,13 +16,10 @@ function PostContent() {
 
   useEffect(() => {
     if (authLoading) return;
-    
-    // 비로그인 상태면 데이터를 아예 요청하지 않음 (보안/에러 방지)
     if (!isLoggedIn) {
       setDataLoading(false);
       return;
     }
-
     if (id) {
       getPostById(id)
         .then((data) => {
@@ -30,7 +27,7 @@ function PostContent() {
           setDataLoading(false);
         })
         .catch((err) => {
-          console.error("글 불러오기 실패:", err);
+          console.error(err);
           setDataLoading(false);
         });
     } else {
@@ -84,8 +81,16 @@ function PostContent() {
         </button>
       </div>
 
+      {/* 👇 날짜 포맷팅 수정 */}
       <p style={{ color: '#888', marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-        {post.createdAt}
+        {new Date(post.createdAt).toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        })}
       </p>
       
       <MarkdownRenderer content={post.content} />
