@@ -1,23 +1,47 @@
 // src/app/page.js
+"use client"; // 👈 클라이언트 컴포넌트로 변경
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react'; // React Hook 추가
 import { PostService } from '@/services/postService';
-import styles from './page.module.css'; // 기존 스타일 유지
+import styles from './page.module.css';
 
-export const revalidate = 0; // 항상 최신글 보여주기
+export default function Home() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function Home() {
-  const posts = await PostService.getAll();
+  // 컴포넌트가 마운트될 때 데이터 불러오기
+  useEffect(() => {
+    PostService.getAll().then((data) => {
+      setPosts(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <main className={styles.main} style={{ padding: '20px' }}>
+        <p>로딩 중...</p>
+      </main>
+    );
+  }
 
   return (
     <main className={styles.main}>
-      {posts.map((post) => (
-        <div key={post.id} style={{ marginBottom: '40px' }}>
-          <Link href={`/post?id=${post.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <h2>{post.title}</h2>
-            <p style={{ color: '#666' }}>{post.createdAt?.split('T')[0]}</p>
-          </Link>
-        </div>
-      ))}
+      {posts.length === 0 ? (
+        <p style={{ padding: '20px', color: '#666' }}>작성된 글이 없습니다.</p>
+      ) : (
+        posts.map((post) => (
+          <div key={post.id} style={{ marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
+            <Link href={`/post?id=${post.id}`} className={styles.item}>
+              <h2 className={styles.title}>{post.title}</h2>
+              <p className={styles.date}>
+                {post.createdAt?.split('T')[0] || '날짜 없음'}
+              </p>
+            </Link>
+          </div>
+        ))
+      )}
     </main>
   );
 }
