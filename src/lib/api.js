@@ -1,33 +1,29 @@
 import { db } from '@/lib/db'; 
 import { 
     collection, addDoc, getDocs, getDoc, doc, 
-    query, orderBy, updateDoc, deleteDoc   
+    query, orderBy, updateDoc, deleteDoc, serverTimestamp 
 } from 'firebase/firestore'; 
 
 const COLLECTION_NAME = 'posts';
 
-// 헬퍼 함수: 날짜 데이터 안전하게 변환
+// 헬퍼 함수: Firestore 타임스탬프를 ISO 문자열로 변환
 const convertDoc = (docSnap) => {
   const data = docSnap.data();
-  // 기존 데이터(문자열)와 Timestamp 객체 모두 호환되도록 처리
-  const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt;
-  const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt;
-
   return {
     id: docSnap.id,
     ...data,
-    createdAt,
-    updatedAt
+    createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : null,
+    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : null,
   };
 };
 
-// 1. 글 저장 (클라이언트 시간 사용으로 롤백)
+// 1. 글 저장
 export const createPost = async (title, content) => {
   try {
     await addDoc(collection(db, COLLECTION_NAME), {
       title,
       content,
-      createdAt: new Date().toISOString(), // 👈 다시 클라이언트 시간으로 변경
+      createdAt: serverTimestamp(), // 서버 시간 사용
     });
     return true;
   } catch (error) {
@@ -53,14 +49,14 @@ export const getPostById = async (id) => {
   return null;
 };
 
-// 4. 글 수정 (수정 시간도 클라이언트 시간)
+// 4. 글 수정
 export const updatePost = async (id, title, content) => {
     try {
         const postRef = doc(db, COLLECTION_NAME, id);
         await updateDoc(postRef, {
             title: title,
             content: content,
-            updatedAt: new Date().toISOString(), // 👈 클라이언트 시간
+            updatedAt: serverTimestamp(), // 수정 시간도 서버 시간으로
         });
         return true;
     } catch (error) {
