@@ -1,4 +1,4 @@
-// src/components/Header.js
+// src/components/common/Header.js
 "use client";
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -10,24 +10,24 @@ export default function Header() {
     if (!isLoggedIn) {
       const code = prompt("Access Code:"); 
       if (code) {
-        // 👇 진짜 서버 로그인을 시도합니다.
         const success = await login(code); 
         if (!success) alert("코드가 일치하지 않습니다.");
       }
     }
   };
 
-  // ... (나머지 return 부분은 기존과 동일) ...
   return (
-    <header style={{ padding: '20px 0', marginBottom: '40px', borderBottom: '1px solid #5D736B' }}>
+    <header style={{ padding: '20px 0', marginBottom: '40px', borderBottom: '1px solid #eee' }}>
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
         <Link href="/" style={{ fontSize: '1.5rem', fontWeight: '700', textDecoration: 'none', color: 'black' }}>
           logbook
         </Link>
         {isLoggedIn ? (
-          <Link href="/write" style={{ textDecoration: 'none', color: '#666', fontWeight: 'bold' }}>
-            Write
-          </Link>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            <Link href="/write" style={{ textDecoration: 'none', color: '#666', fontWeight: 'bold' }}>
+              Write
+            </Link>
+          </div>
         ) : (
           <button 
             onClick={handleAuthClick} 

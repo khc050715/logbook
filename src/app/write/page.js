@@ -1,20 +1,19 @@
+// src/app/write/page.js
 "use client"; 
 import { useRouter } from 'next/navigation';
-import { createPost } from '@/lib/api';
+import { PostService } from '@/services/postService'; // 👈 Service 사용
 import { useAuth } from '@/context/AuthContext';
-import { useAuthGuard } from '@/hooks/useAuthGuard'; // 👈 Custom Hook
-import PostForm from '@/components/PostForm'; // 👈 Component
+import { useAuthGuard } from '@/hooks/useAuthGuard'; 
+import PostForm from '@/components/posts/PostForm'; // 👈 경로 변경됨
 
 export default function WritePage() {
   const router = useRouter();
   const { logout } = useAuth();
-  
-  // 1. 보안 가드 (한 줄로 처리)
   const { isLoading } = useAuthGuard();
 
   const handleCreate = async (title, content) => {
-    const res = await createPost(title, content);
-    if (res) {
+    const success = await PostService.create(title, content); // 👈 Service 호출
+    if (success) {
       alert('저장 완료!');
       router.push('/');
     }
@@ -29,7 +28,7 @@ export default function WritePage() {
   if (isLoading) return null;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px 0' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: '20px'}}>
         <h1>글 쓰기</h1>
         <button 

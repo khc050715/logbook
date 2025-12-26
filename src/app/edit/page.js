@@ -1,34 +1,33 @@
+// src/app/edit/page.js
 "use client";
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getPostById, updatePost } from '@/lib/api';
+import { PostService } from '@/services/postService'; // 👈 Service 사용
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import PostForm from '@/components/PostForm';
+import PostForm from '@/components/posts/PostForm'; // 👈 경로 변경됨
 
 function EditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
-
-  // 1. 보안 가드
   const { isLoading: authLoading } = useAuthGuard();
 
   const [post, setPost] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
 
-  // 데이터 불러오기
   useEffect(() => {
     if (!id) return;
-    getPostById(id).then((data) => {
+    PostService.getById(id).then((data) => {
       setPost(data);
       setDataLoading(false);
     });
   }, [id]);
 
   const handleUpdate = async (title, content) => {
-    if (await updatePost(id, title, content)) {
+    const success = await PostService.update(id, title, content);
+    if (success) {
       alert('수정 완료!');
-      router.push(`/post?id=${id}`);
+      router.push(`/post?id=${id}`); // 👈 상세 페이지 경로 확인 필요 (app/post/page.js가 있다면)
     } else {
       alert('수정 실패');
     }
@@ -38,7 +37,7 @@ function EditForm() {
   if (!id || !post) return <p>잘못된 접근입니다.</p>;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px 0' }}>
       <h1 style={{ marginBottom: '20px' }}>글 수정하기</h1>
       <PostForm 
         initialTitle={post.title} 

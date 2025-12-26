@@ -1,107 +1,53 @@
-"use client";
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { getPostById, deletePost } from '@/lib/api';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
-import { useAuth } from '@/context/AuthContext';
+// src/app/post/page.js
+"use client"; // 1. 클라이언트 컴포넌트 선언
 
-function PostContent() {
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { PostService } from '@/services/postService';
+import PostViewer from '@/components/posts/PostViewer';
+import PostActions from '@/components/posts/PostActions';
+
+function PostView() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const id = searchParams.get('id');
+  const id = searchParams.get('id'); // 2. 클라이언트에서 ID 추출
   
   const [post, setPost] = useState(null);
-  const [dataLoading, setDataLoading] = useState(true);
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const [loading, setLoading] = useState(true);
 
+  // 3. ID가 있을 때 데이터 불러오기
   useEffect(() => {
-    if (authLoading) return;
-    if (!isLoggedIn) {
-      setDataLoading(false);
-      return;
-    }
-    if (id) {
-      getPostById(id)
-        .then((data) => {
-          setPost(data);
-          setDataLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setDataLoading(false);
-        });
-    } else {
-      setDataLoading(false);
-    }
-  }, [id, authLoading, isLoggedIn]);
+    if (!id) return;
+    PostService.getById(id).then((data) => {
+      setPost(data);
+      setLoading(false);
+    });
+  }, [id]);
 
-  const handleDelete = async () => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      const success = await deletePost(post.id);
-      if (success) {
-        alert('삭제되었습니다.');
-        router.push('/');
-      } else {
-        alert('삭제 실패');
-      }
-    }
-  };
-
-  if (authLoading) return <p style={{ textAlign: 'center', marginTop: '50px' }}>🔐 보안 확인 중...</p>;
-
-  if (!isLoggedIn) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '100px', color: '#888' }}>
-        <h2 style={{ fontSize: '3rem', marginBottom: '20px'}}>🔒</h2>
-        <p>비공개 문서입니다.</p>
-        <p style={{ fontSize: '0.9rem'}}>상단 'Id Code'를 입력하여 잠금을 해제하세요.</p>
-      </div>
-    );
-  }
-
-  if (dataLoading) return <p style={{ textAlign: 'center', marginTop: '50px' }}>글 불러오는 중...</p>;
-  if (!post) return <p style={{ textAlign: 'center', marginTop: '50px' }}>글을 찾을 수 없습니다.</p>;
+  if (!id) return <div style={{ padding: '20px' }}>잘못된 접근입니다.</div>;
+  if (loading) return <div style={{ padding: '20px' }}>로딩 중...</div>;
+  if (!post) return <div style={{ padding: '20px' }}>글을 찾을 수 없습니다.</div>;
 
   return (
-    <article>
-      <h1 style={{ fontSize: '2.2rem', marginBottom: '10px' }}>{post.title}</h1>
-      
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <button 
-          onClick={() => router.push(`/edit?id=${post.id}`)} 
-          style={{ padding: '8px 15px', border: '1px solid #ccc', background: '#f9f9f9', cursor: 'pointer', borderRadius: '5px' }}
-        >
-          수정하기
-        </button>
-        <button 
-          onClick={handleDelete} 
-          style={{ padding: '8px 15px', border: '1px solid #ff4d4f', background: '#fff', color: '#ff4d4f', cursor: 'pointer', borderRadius: '5px' }}
-        >
-          삭제하기
-        </button>
-      </div>
-
-      {/* 👇 날짜 포맷팅 수정 */}
-      <p style={{ color: '#888', marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-        {new Date(post.createdAt).toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        })}
+    <article style={{ padding: '20px 0' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>{post.title}</h1>
+      <p style={{ color: '#888', marginBottom: '40px' }}>
+        {post.createdAt?.split('T')[0]}
       </p>
       
-      <MarkdownRenderer content={post.content} />
+      {/* 뷰어 컴포넌트 */}
+      <PostViewer content={post.content} />
+      
+      {/* 수정/삭제 버튼 */}
+      <PostActions id={id} />
     </article>
   );
 }
 
 export default function PostPage() {
   return (
+    // 4. useSearchParams를 사용하는 컴포넌트는 반드시 Suspense로 감싸야 빌드 에러가 안 납니다.
     <Suspense fallback={<div>Loading...</div>}>
-      <PostContent />
+      <PostView />
     </Suspense>
   );
 }
