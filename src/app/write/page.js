@@ -35,7 +35,7 @@ export default function WritePage() {
           onClick={handleLogout} 
           style={{ padding:'8px 12px', fontSize:'0.8rem', background:'#eee', border:'1px solid #ddd', borderRadius:'5px', cursor:'pointer' }}
         >
-          🔒 Lock System
+          Logout
         </button>
       </div>
 

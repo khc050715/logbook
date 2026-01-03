@@ -32,7 +32,7 @@ export default function Home() {
         <p style={{ padding: '20px', color: '#666' }}>작성된 글이 없습니다.</p>
       ) : (
         posts.map((post) => (
-          <div key={post.id} style={{ marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
+          <div key={post.id} style={{ marginBottom: '40px', borderBottom: '1px solid #c7c7c7', paddingBottom: '20px' }}>
             <Link href={`/post?id=${post.id}`} className={styles.item}>
               <h2 className={styles.title}>{post.title}</h2>
               <p className={styles.date}>

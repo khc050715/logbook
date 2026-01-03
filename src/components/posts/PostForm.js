@@ -35,11 +35,13 @@ export default function PostForm({ initialTitle = '', initialContent = '', onSub
         onChange={(e) => setTitle(e.target.value)}
         placeholder="제목"
         style={{ 
-          padding: '15px', 
-          fontSize: '1.5rem', 
+          padding: '10px', 
+          fontSize: '1.2rem', 
           fontWeight: 'bold', 
           border: '1px solid #ddd', 
-          borderRadius: '8px' 
+          borderRadius: '8px', 
+          height: '1.5rem',
+          lineHeight: '1.5rem'
         }}
       />
       
