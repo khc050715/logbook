@@ -36,7 +36,7 @@ export default function Home() {
             <Link href={`/post?id=${post.id}`} className={styles.item}>
               <h2 className={styles.title}>{post.title}</h2>
               <p className={styles.date}>
-                {post.createdAt?.split('T')[0] || '날짜 없음'}
+                {post.createdAt ? post.createdAt.split('T')[0] + ' ' + post.createdAt.split('T')[1].slice(0, 5) : '날짜 없음'}
               </p>
             </Link>
           </div>

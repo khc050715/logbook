@@ -31,7 +31,7 @@ function PostView() {
     <article style={{ padding: '20px 0' }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>{post.title}</h1>
       <p style={{ color: '#888', marginBottom: '40px' }}>
-        {post.createdAt?.split('T')[0]}
+        {post.createdAt ? post.createdAt.split('T')[0] + ' ' + post.createdAt.split('T')[1].slice(0, 5) : '날짜 없음'}
       </p>
       
       {/* 뷰어 컴포넌트 */}
