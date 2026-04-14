@@ -1,7 +1,7 @@
 // src/components/posts/PostActions.js
 "use client";
 import { useRouter } from 'next/navigation';
-import { PostService } from '@/services/postService'; // 변경됨
+import { PostService } from '@/services/postService';
 
 export default function PostActions({ id }) {
   const router = useRouter();

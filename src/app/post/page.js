@@ -10,15 +10,16 @@ import PostActions from '@/components/posts/PostActions';
 function PostView() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id'); // 2. 클라이언트에서 ID 추출
-  
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPinned, setIsPinned] = useState(false);
 
   // 3. ID가 있을 때 데이터 불러오기
   useEffect(() => {
     if (!id) return;
     PostService.getById(id).then((data) => {
       setPost(data);
+      setIsPinned(data.isPinned || false);
       setLoading(false);
     });
   }, [id]);
@@ -26,6 +27,16 @@ function PostView() {
   if (!id) return <div style={{ padding: '20px' }}>잘못된 접근입니다.</div>;
   if (loading) return <div style={{ padding: '20px' }}>로딩 중...</div>;
   if (!post) return <div style={{ padding: '20px' }}>글을 찾을 수 없습니다.</div>;
+
+  const handleTogglePin = async () => {
+    try {
+      const result = await PostService.togglePin(id, isPinned);
+      setIsPinned(result.isPinned);
+      alert(result.isPinned ? "상단에 고정되었습니다." : "고정이 해제되었습니다.");
+    } catch (error) {
+      console.error("Pin toggle failed:", error);
+    }
+  };
 
   return (
     <article style={{ padding: '20px 0' }}>
@@ -37,8 +48,11 @@ function PostView() {
       {/* 뷰어 컴포넌트 */}
       <PostViewer content={post.content} />
       
-      {/* 수정/삭제 버튼 */}
-      <PostActions id={id} />
+      <div style={{ float: left }}>
+        {/* 수정/삭제 버튼 */}
+        <PostActions id={id} />
+        <button onClick={handleTogglePin}>📌</button>
+      </div>
     </article>
   );
 }
