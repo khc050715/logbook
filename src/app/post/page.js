@@ -48,7 +48,7 @@ function PostView() {
       {/* 뷰어 컴포넌트 */}
       <PostViewer content={post.content} />
       
-      <div style={{ float: left }}>
+      <div style={{ float: 'left' }}>
         {/* 수정/삭제 버튼 */}
         <PostActions id={id} />
         <button onClick={handleTogglePin}>📌</button>
