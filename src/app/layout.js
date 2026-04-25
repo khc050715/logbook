@@ -4,8 +4,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/common/Header"; // 👈 경로 변경됨
 
 export const metadata = {
-  title: "logbook",
-  description: "Personal Dev Blog",
+  title: "[Dépassement]logbook",
+  description: "[지양(Dépassement)]Personal Dev Blog",
 };
 
 export default function RootLayout({ children }) {
